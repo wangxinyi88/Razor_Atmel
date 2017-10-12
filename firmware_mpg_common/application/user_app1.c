@@ -228,7 +228,7 @@ static void UserApp1SM_Idle(void)
   }
 #endif /* EIE1 */
   
- 
+  u8 u8LastState;
   
   
   if( AntReadAppMessageBuffer() )
@@ -264,7 +264,18 @@ static void UserApp1SM_Idle(void)
         }
       }
       
-      AntQueueBroadcastMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
+      for(u8 i = 0; i < ANT_DATA_BYTES; i++)
+      {
+        au8DataContent[2 * i]     = HexToASCIICharUpper(G_au8AntApiCurrentMessageBytes[i] / 16);
+        au8DataContent[2 * i + 1] = HexToASCIICharUpper(G_au8AntApiCurrentMessageBytes[i] % 16);
+      }
+      
+      
+      u8LastState = 
+      AntQueueAcknowledgedMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
+      
+      u8LastState = G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX]
+        
     }
   } /* end AntReadData() */
   
