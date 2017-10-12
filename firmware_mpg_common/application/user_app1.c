@@ -228,6 +228,9 @@ static void UserApp1SM_Idle(void)
   }
 #endif /* EIE1 */
   
+ 
+  
+  
   if( AntReadAppMessageBuffer() )
   {
      /* New message from ANT task: check what it is */
@@ -260,6 +263,7 @@ static void UserApp1SM_Idle(void)
           au8TestMessage[5]++;
         }
       }
+      
       AntQueueBroadcastMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
     }
   } /* end AntReadData() */
