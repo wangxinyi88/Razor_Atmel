@@ -47,9 +47,9 @@ volatile u32 G_u32UserApp1Flags;                       /* Global state flags */
 /*--------------------------------------------------------------------------------------------------------------------*/
 /* Existing variables (defined in other files -- should all contain the "extern" keyword) */
 extern u32 G_u32AntApiCurrentMessageTimeStamp;                    /* From ant_api.c */
-extern u8 G_au8AntApiCurrentData[ANT_APPLICATION_MESSAGE_BYTES];
+
 extern AntApplicationMessageType G_eAntApiCurrentMessageClass;    /* From ant_api.c */
-extern u8 G_au8AntApiCurrentMessageBytes[ANT_APPLICATION_MESSAGE_BYTES];  /* From ant_api.c */
+extern u8 G_au8AntApiCurrentMessageBytes[];
 extern AntExtendedDataType G_au8AntApiCurrentMessageExtData;                /* From ant_api.c */
 
 extern volatile u32 G_u32SystemFlags;                  /* From main.c */
@@ -244,7 +244,6 @@ static void UserApp1SM_Idle(void)
   if( AntReadAppMessageBuffer() )
   {
      /* New message from ANT task: check what it is */
-    if(G_eAntApiCurrentMessageClass == ANT_DATA)
     {
       /* We got some data: parse it into au8DataContent[] */
       for(u8 i = 0; i < ANT_DATA_BYTES; i++)
@@ -262,7 +261,7 @@ static void UserApp1SM_Idle(void)
       
     }
 
-    else if(G_eAntApiCurrentMessageClass == ANT_TICK&&G_au8AntApiCurrentData[ANT_TICK_MSG_EVENT_CODE_INDEX]!=EVENT_TRANSFER_TX_FAILED)
+    else if(G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX] == ANT_TICK&&G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX]!=EVENT_TRANSFER_TX_FAILED)
     {
      /* Update and queue the new message data */
       au8TestMessage[7]++;
@@ -276,7 +275,7 @@ static void UserApp1SM_Idle(void)
       }
     }
     
-    if(G_au8AntApiCurrentData[ANT_TICK_MSG_EVENT_CODE_INDEX] == EVENT_TRANSFER_TX_FAILED)
+    if(G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX] == EVENT_TRANSFER_TX_FAILED)
     {
       au8TestMessage[3]++;
       if(au8TestMessage[3] == 0)
