@@ -244,6 +244,7 @@ static void UserApp1SM_Idle(void)
   if( AntReadAppMessageBuffer() )
   {
      /* New message from ANT task: check what it is */
+    if(G_eAntApiCurrentMessageClass[ANT_TICK_MSG_EVENT_CODE_INDEX] == ANT_DATA)
     {
       /* We got some data: parse it into au8DataContent[] */
       for(u8 i = 0; i < ANT_DATA_BYTES; i++)
