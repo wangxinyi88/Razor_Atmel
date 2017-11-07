@@ -168,7 +168,10 @@ void UserApp1RunActiveState(void)
 /*--------------------------------------------------------------------------------------------------------------------*/
 /* Private functions                                                                                                  */
 /*--------------------------------------------------------------------------------------------------------------------*/
-
+static u8 au8DataContent[LcdLength] = {0};
+static u8 au8TotalContent[]="xxxxxx";
+static u8 au8FailContent[] ="xxxxxx";
+static u8 au8TextContent[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 /**********************************************************************************************************************
 State Machine Function Definitions
@@ -198,8 +201,8 @@ static void UserApp1SM_AntChannelAssign()
 /* Wait for ??? */
 static void UserApp1SM_Idle(void)
 {
-  static u8 au8TestMessage[] = {0, 0, 0, 0, 0xA5, 0, 0, 0};
-  u8 au8DataContent[] = "xxxxxxxxxxxxxxxx";
+  static u8 au8TestMessage[] = {0x5B, 0, 0, 0, 0xFF, 0, 0, 0};
+  //u8 au8DataCount[] = ;
   
   /* Check all the buttons and update au8TestMessage according to the button state */ 
   au8TestMessage[0] = 0x00;
@@ -231,6 +234,7 @@ static void UserApp1SM_Idle(void)
   if( AntReadAppMessageBuffer() )
   {
      /* New message from ANT task: check what it is */
+#if 0
     if(G_eAntApiCurrentMessageClass == ANT_DATA)
     {
       /* We got some data: parse it into au8DataContent[] */
@@ -242,14 +246,65 @@ static void UserApp1SM_Idle(void)
 
 #ifdef EIE1
       LCDMessage(LINE2_START_ADDR, au8DataContent);
+    }
 #endif /* EIE1 */
+      
+#endif
       
 #ifdef MPG2
 #endif /* MPG2 */
       
-    }
-    else if(G_eAntApiCurrentMessageClass == ANT_TICK)
+
+
+    if(G_eAntApiCurrentMessageClass == ANT_TICK)
     {
+      if(G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX] == EVENT_TRANSFER_TX_COMPLETED)
+      {
+        au8DataContent[7]++;
+        if(au8DataContent[7] == 0)
+        {
+          au8DataContent[6]++;
+          if(au8DataContent[6] == 0)
+          {
+            au8DataContent[5]++;
+          }
+        }
+        
+        for(u8 i = 0; i < 3; i++)
+        {
+          au8TotalContent[2 * i]     = HexToASCIICharUpper(au8DataContent[i+5] / 16);
+          au8TotalContent[2 * i + 1] = HexToASCIICharUpper(au8DataContent[i+5] % 16);
+        }
+      //AntQueueAcknowledgedMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
+      LCDMessage(LINE1_START_ADDR,au8TotalContent);
+      }
+      
+      else if(G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX] ==EVENT_TRANSFER_TX_FAILED )
+      {
+        au8DataContent[3]++;
+        if(au8DataContent[3] == 0)
+        {
+          au8DataContent[2]++;
+          if(au8DataContent[2] == 0)
+          {
+            au8DataContent[1]++;
+          }
+        }
+        
+        for(u8 i = 0; i < 3; i++)
+        {
+          au8FailContent[2 * i]     = HexToASCIICharUpper(au8DataContent[i+1] / 16);
+          au8FailContent[2 * i + 1] = HexToASCIICharUpper(au8DataContent[i+1] % 16);
+        }
+      
+        LCDMessage(LINE2_START_ADDR,au8FailContent);
+        
+      }
+      AntQueueAcknowledgedMessage(ANT_CHANNEL_USERAPP, au8DataContent);
+    }
+
+      
+#if 0     
      /* Update and queue the new message data */
       au8TestMessage[7]++;
       if(au8TestMessage[7] == 0)
@@ -260,11 +315,13 @@ static void UserApp1SM_Idle(void)
           au8TestMessage[5]++;
         }
       }
-      AntQueueBroadcastMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
-    }
-  } /* end AntReadData() */
-  
-} /* end UserApp1SM_Idle() */
+      AntQueueAcknowledgedMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
+    
+   /* end AntReadData() */
+#endif  
+  }
+}/* end UserApp1SM_Idle() */
+
 
 
 /*-------------------------------------------------------------------------------------------------------------------*/
