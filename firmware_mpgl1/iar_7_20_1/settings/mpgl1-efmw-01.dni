@@ -10,7 +10,7 @@ LimitSize=0
 ByteLimit=50
 [DebugChecksum]
 <<<<<<< HEAD
-Checksum=-979167060
+Checksum=513368517
 =======
 Checksum=-762988365
 >>>>>>> refs/remotes/origin/master
@@ -70,7 +70,12 @@ mode=0
 Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\firmware_mpg_common\drivers\ant.c}.1671.5" 0 0 1 "" 0 "" 0
 Bp1=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\firmware_mpg_common\drivers\ant.c}.1262.13" 0 0 1 "" 0 "" 0
 Bp2=_ 0 "EMUL_CODE" "{$PROJ_DIR$\..\..\firmware_mpg_common\drivers\ant.c}.1258.13" 0 0 1 "" 0 "" 0
-Count=3
+Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\firmware_mpg_common\application\user_app1.c}.259.5" 0 0 1 "" 0 "" 0
+Bp4=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\firmware_mpg_common\application\user_app1.c}.261.9" 0 0 1 "" 0 "" 0
+Bp5=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\firmware_mpg_common\application\user_app1.c}.281.7" 0 0 1 "" 0 "" 0
+Bp6=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\firmware_mpg_common\application\user_app1.c}.283.9" 0 0 1 "" 0 "" 0
+Bp7=_ 1 "EMUL_CODE" "{$PROJ_DIR$\..\..\firmware_mpg_common\application\user_app1.c}.273.11" 0 0 1 "" 0 "" 0
+Count=8
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
