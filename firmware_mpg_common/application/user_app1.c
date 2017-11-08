@@ -95,7 +95,7 @@ Promises:
 */
 void UserApp1Initialize(void)
 {
-  u8 au8WelcomeMessage[] = "ANT Master";
+  u8 au8WelcomeMessage[] = "      ";
 
   /* Write a weclome message on the LCD */
 #if EIE1
@@ -258,8 +258,6 @@ static void UserApp1SM_Idle(void)
 
     if(G_eAntApiCurrentMessageClass == ANT_TICK)
     {
-      if(G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX] == EVENT_TRANSFER_TX_COMPLETED)
-      {
         au8DataContent[7]++;
         if(au8DataContent[7] == 0)
         {
@@ -274,12 +272,13 @@ static void UserApp1SM_Idle(void)
         {
           au8TotalContent[2 * i]     = HexToASCIICharUpper(au8DataContent[i+5] / 16);
           au8TotalContent[2 * i + 1] = HexToASCIICharUpper(au8DataContent[i+5] % 16);
+          
         }
-      //AntQueueAcknowledgedMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
+
       LCDMessage(LINE1_START_ADDR,au8TotalContent);
-      }
       
-      else if(G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX] ==EVENT_TRANSFER_TX_FAILED )
+      
+      if(G_au8AntApiCurrentMessageBytes[ANT_TICK_MSG_EVENT_CODE_INDEX] == EVENT_TRANSFER_TX_FAILED )
       {
         au8DataContent[3]++;
         if(au8DataContent[3] == 0)
@@ -304,21 +303,7 @@ static void UserApp1SM_Idle(void)
     }
 
       
-#if 0     
-     /* Update and queue the new message data */
-      au8TestMessage[7]++;
-      if(au8TestMessage[7] == 0)
-      {
-        au8TestMessage[6]++;
-        if(au8TestMessage[6] == 0)
-        {
-          au8TestMessage[5]++;
-        }
-      }
-      AntQueueAcknowledgedMessage(ANT_CHANNEL_USERAPP, au8TestMessage);
-    
-   /* end AntReadData() */
-#endif  
+  
   }
 }/* end UserApp1SM_Idle() */
 
