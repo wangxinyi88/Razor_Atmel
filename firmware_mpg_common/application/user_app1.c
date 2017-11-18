@@ -71,6 +71,7 @@ static u8 u8MAorSL;
 static bool bShow=TRUE;
 static bool bLcdSlaveShow=FALSE;
 static bool bLedShow=FALSE;
+static bool bState=TRUE;
 /**********************************************************************************************************************
 Function Definitions
 **********************************************************************************************************************/
@@ -278,6 +279,14 @@ static void UserAppSM_WaitChannelClose(void)
 
 static void UserAppSM_ChannelOpen(void)
 {
+  
+  if(WasButtonPressed(BUTTON2))
+  {
+    ButtonAcknowledge(BUTTON2));
+    bState = FALSE;
+    UserApp1_StateMachine = UserAppSM_ChannelOpenSlave;
+  }
+    
 
   static u8 u8LastState = 0xff;
   static u8 au8SwitchSlaveTip[]="switch slave ?";
@@ -479,8 +488,29 @@ static void UserAppSM_ChannelOpen(void)
 
     } /* end else if(G_eAntApiCurrentMessageClass == ANT_TICK) */
     
+    
+    
+    
+    
+
+      
+    
 
   } /* end AntReadAppMessageBuffer() */
+  
+  
+  
+static void UserAppSM_ChannelOpenSlave(void)
+{
+  LedNumberType aeLedDisplayLevels[LED_NUMBER] = {RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,PURPLE,WHITE};
+  
+  if(AntRadioStatusChannel(ANT_CHANNEL_USERAPP) != ANT_OPEN)
+  {
+     u8LastState = 0xff;
+    UserApp_u32Timeout = G_u32SystemTime1ms;
+    UserApp1_StateMachine = UserAppSM_WaitChannelClose;
+  } /* if(AntRadioStatusChannel(ANT_CHANNEL_USERAPP) != ANT_OPEN) */
+}
   
     
   if(WasButtonPressed(BUTTON3))
@@ -513,6 +543,7 @@ static void UserAppSM_WaitChannelOpen(void)
   {
     
     UserApp1_StateMachine = UserAppSM_ChannelOpen;
+    LedOn(BLUE);
   }
 
   /* Check for timeout */
