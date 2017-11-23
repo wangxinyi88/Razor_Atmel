@@ -29,9 +29,10 @@ Type Definitions
 Constants / Definitions
 **********************************************************************************************************************/
 /* Required constants for ANT channel configuration */
-#define ANT_CHANNEL_USERAPP             ANT_CHANNEL_0         
-#define ANT_CHANNEL_TYPE_MASTER       CHANNEL_TYPE_MASTER    
-#define ANT_CHANNEL_TYPE_SLAVE        CHANNEL_TYPE_SLAVE   
+#define ANT_CHANNEL_USERAPPMaster             ANT_CHANNEL_0
+#define ANT_CHANNEL_USERAPPSlave              ANT_CHANNEL_1
+#define ANT_CHANNEL_TYPE_MASTER               CHANNEL_TYPE_MASTER    
+#define ANT_CHANNEL_TYPE_SLAVE                CHANNEL_TYPE_SLAVE   
 #define ANT_DerEVICEID_LO_USERAPP       (u8)0x6A               
 #define ANT_DEVICEID_HI_USERAPP         (u8)0x01       
 #define ANT_DEVICE_TYPE_USERAPP         (u8)1      
@@ -41,7 +42,7 @@ Constants / Definitions
 #define ANT_FREQUENCY_USERAPP           (u8)50           
 #define ANT_TX_POWER_USERAPP            RADIO_TX_POWER_4DBM 
 #define TIMEOUT_VALUE                    (u8)3000
-#define NUMBER_ASCII_TO_DEC                  48
+//#define NUMBER_ASCII_TO_DEC                  48
 #define LEVE_NUBER                        (u8)8
 #define LED_NUMBER                         8
 #define s8WeakRssi                         -99

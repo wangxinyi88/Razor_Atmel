@@ -86,7 +86,7 @@ Function Definitions
 static void UserApp1SM_WaitChannelAssign()
 {
  
-  if( AntRadioStatusChannel(ANT_CHANNEL_USERAPP) == ANT_CONFIGURED)
+  if( AntRadioStatusChannel(ANT_CHANNEL_USERAPP) == ANT_CONFIGURED&&)
   {
     /* Channel assignment is successful, so open channel and
     proceed to Idle state */
@@ -128,10 +128,10 @@ static void UserApp1SlaveInitialize(void)
   static u8 au8WelcomeMessage[] = "Hide and go Seek";
   static  u8 au8Instructions[] = "Start Press Button 0 ";
   AntAssignChannelInfoType sAntSetupData;
-   bLcdSlaveShow=FALSE;
-   bShow=TRUE;
-   bStateflag=TRUE; 
-   bLedShow=TRUE;
+  bLcdSlaveShow=FALSE;
+  bShow=TRUE;
+  bStateflag=TRUE; 
+  bLedShow=TRUE;
   /* Clear screen and place start messages */
   LCDCommand(LCD_CLEAR_CMD);
   LCDMessage(LINE1_START_ADDR, au8WelcomeMessage); 
@@ -183,11 +183,12 @@ static void UserApp1SlaveInitialize(void)
   LedOff(CYAN); 
   LedOff(ORANGE); 
   PWMAudioOn(BUZZER1);
-
+  
+  /*Master Initialize*/
   static u8 au8WelcomeMessage[] = "Hide and go Seek";
   static u8 au8Instructions[] = "Start Press Button 0 ";
   AntAssignChannelInfoType sAntSetupDataMaster,sAntSetupDataSlave;
-  
+
   
    bStateflag=FALSE;  
   /* Clear screen and place start messages */
@@ -198,8 +199,8 @@ static void UserApp1SlaveInitialize(void)
   /* Start with LED0 in RED state = channel is not configured */
 
   
- /* Configure ANT for this application */
-  sAntSetupDataMaster.AntChannel          = ANT_CHANNEL_0;
+ /* Configure ANT for this applicationof channel0 */
+  sAntSetupDataMaster.AntChannel          = ANT_CHANNEL_USERAPPMaster;
   sAntSetupDataMaster.AntChannelType      = ANT_CHANNEL_TYPE_SLAVE;
   sAntSetupDataMaster.AntChannelPeriodLo  = ANT_CHANNEL_PERIOD_LO_USERAPP;
   sAntSetupDataMaster.AntChannelPeriodHi  = ANT_CHANNEL_PERIOD_HI_USERAPP;
@@ -211,7 +212,7 @@ static void UserApp1SlaveInitialize(void)
   sAntSetupDataMaster.AntFrequency        = ANT_FREQUENCY_USERAPP;
   sAntSetupDataMaster.AntTxPower          = ANT_TX_POWER_USERAPP;
   
-  
+  /* Configure ANT for this applicationof channel1 */
   sAntSetupDataSlave.AntChannel          = ANT_CHANNEL_1;
   sAntSetupDataSlave.AntChannelType      = ANT_CHANNEL_TYPE_SLAVE;
   sAntSetupDataSlave.AntChannelPeriodLo  = ANT_CHANNEL_PERIOD_LO_USERAPP;
