@@ -265,6 +265,20 @@ void UserApp1RunActiveState(void)
 State Machine Function Definitions
 **********************************************************************************************************************/
 
+
+#if 0
+static void UserApp1SM_ChannelUnassign(void)
+{
+  if(AntRadioStatusChannel(ANT_CHANNEL_USERAPP) == ANT_CLOSED)
+  {
+    AntUnassignChannelNumber(ANT_CHANNEL_USERAPP);
+    UserApp1_StateMachine = UserApp1SlaveInitialize£»
+  }
+}
+#endif
+
+    
+
 static void UserAppSM_WaitChannelClose(void)
 {
  
@@ -281,6 +295,7 @@ static void UserAppSM_WaitChannelClose(void)
  
 } /* end UserAppSM_WaitChannelClose() */
 
+
 static void UserAppSM_ChannelOpen(void)
 {
 
@@ -292,6 +307,7 @@ static void UserAppSM_ChannelOpen(void)
   static u8 u810Counter=0;
   static u8 u8BuzzerCounter=0;
   static bool bCompleted=TRUE;
+  static bool bChannelClose = FALSE;
   static s8 s8RssiValue;
   static s8 s8AbsRssiValue;
   LedNumberType aeLedDisplayLevels[LED_NUMBER] = {RED,ORANGE,YELLOW,GREEN,CYAN,BLUE,PURPLE,WHITE};
@@ -347,14 +363,14 @@ static void UserAppSM_ChannelOpen(void)
         pau8LcdMasterShow++;
         *pau8LcdMasterShow = (s8AbsRssiValue % 10) + NUMBER_ASCII_TO_DEC;
        }
-#if 0
+
        else
        { 
         *pau8LcdSlaveShow = (s8AbsRssiValue / 10) + NUMBER_ASCII_TO_DEC;
         pau8LcdSlaveShow++;
         *pau8LcdSlaveShow = (s8AbsRssiValue % 10) + NUMBER_ASCII_TO_DEC;
        }
-#endif
+
        if(bLedShow)
        {
            /*led show*/
@@ -373,14 +389,19 @@ static void UserAppSM_ChannelOpen(void)
      
       if(s8AbsRssiValue<46)
       {
-         LCDMessage(LINE1_START_ADDR, "Hide  you found me > - <"); 
+        if(bStateflag)
+        {
+          LCDMessage(LINE1_START_ADDR, "Hide  you found me > - <"); 
+        }
+      
+          
 
-#if 0
         else
         {
-         LCDMessage(LINE1_START_ADDR, "Seeker    found you *0*"); 
+         LCDMessage(LINE1_START_ADDR, "Seeker    found you *0*");
+         bChannelClose = TRUE;
         }
-#endif
+
       }
       else
       {
@@ -488,6 +509,16 @@ static void UserAppSM_ChannelOpen(void)
     
 
   } /* end AntReadAppMessageBuffer() */
+  
+  
+#if 0
+  if(bChannelClose)
+  {
+    AntCloseChannelNumber(ANT_CHANNEL_USERAPP);
+    bChannelClose = FALSE;
+    UserApp1_StateMachine = UserApp1SM_ChannelUnassign;
+  }
+#endif
   
     
   if(WasButtonPressed(BUTTON3))
