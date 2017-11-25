@@ -29,8 +29,7 @@ Type Definitions
 Constants / Definitions
 **********************************************************************************************************************/
 /* Required constants for ANT channel configuration */
-#define ANT_CHANNEL_USERAPPMaster             ANT_CHANNEL_0
-#define ANT_CHANNEL_USERAPPSlave              ANT_CHANNEL_1
+#define ANT_CHANNEL_USERAPP             ANT_CHANNEL_0
 #define ANT_CHANNEL_TYPE_MASTER               CHANNEL_TYPE_MASTER    
 #define ANT_CHANNEL_TYPE_SLAVE                CHANNEL_TYPE_SLAVE   
 #define ANT_DerEVICEID_LO_USERAPP       (u8)0x6A               

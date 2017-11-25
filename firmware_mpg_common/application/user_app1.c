@@ -86,7 +86,7 @@ Function Definitions
 static void UserApp1SM_WaitChannelAssign()
 {
  
-  if( AntRadioStatusChannel(ANT_CHANNEL_USERAPP) == ANT_CONFIGURED&&)
+  if( AntRadioStatusChannel(ANT_CHANNEL_USERAPP) == ANT_CONFIGURED)
   {
     /* Channel assignment is successful, so open channel and
     proceed to Idle state */
@@ -187,7 +187,7 @@ static void UserApp1SlaveInitialize(void)
   /*Master Initialize*/
   static u8 au8WelcomeMessage[] = "Hide and go Seek";
   static u8 au8Instructions[] = "Start Press Button 0 ";
-  AntAssignChannelInfoType sAntSetupDataMaster,sAntSetupDataSlave;
+  AntAssignChannelInfoType sAntSetupDataMaster;
 
   
    bStateflag=FALSE;  
@@ -200,7 +200,7 @@ static void UserApp1SlaveInitialize(void)
 
   
  /* Configure ANT for this applicationof channel0 */
-  sAntSetupDataMaster.AntChannel          = ANT_CHANNEL_USERAPPMaster;
+  sAntSetupDataMaster.AntChannel          = ANT_CHANNEL_USERAPP;
   sAntSetupDataMaster.AntChannelType      = ANT_CHANNEL_TYPE_SLAVE;
   sAntSetupDataMaster.AntChannelPeriodLo  = ANT_CHANNEL_PERIOD_LO_USERAPP;
   sAntSetupDataMaster.AntChannelPeriodHi  = ANT_CHANNEL_PERIOD_HI_USERAPP;
@@ -212,29 +212,17 @@ static void UserApp1SlaveInitialize(void)
   sAntSetupDataMaster.AntFrequency        = ANT_FREQUENCY_USERAPP;
   sAntSetupDataMaster.AntTxPower          = ANT_TX_POWER_USERAPP;
   
-  /* Configure ANT for this applicationof channel1 */
-  sAntSetupDataSlave.AntChannel          = ANT_CHANNEL_1;
-  sAntSetupDataSlave.AntChannelType      = ANT_CHANNEL_TYPE_SLAVE;
-  sAntSetupDataSlave.AntChannelPeriodLo  = ANT_CHANNEL_PERIOD_LO_USERAPP;
-  sAntSetupDataSlave.AntChannelPeriodHi  = ANT_CHANNEL_PERIOD_HI_USERAPP;
-  
-  sAntSetupDataSlave.AntDeviceIdLo       = ANT_DerEVICEID_LO_USERAPP;
-  sAntSetupDataSlave.AntDeviceIdHi       = ANT_DEVICEID_HI_USERAPP;
-  sAntSetupDataSlave.AntDeviceType       = ANT_DEVICE_TYPE_USERAPP;
-  sAntSetupDataSlave.AntTransmissionType = ANT_TRANSMISSION_TYPE_USERAPP;
-  sAntSetupDataSlave.AntFrequency        = ANT_FREQUENCY_USERAPP;
-  sAntSetupDataSlave.AntTxPower          = ANT_TX_POWER_USERAPP;
 
   sAntSetupDataMaster.AntNetwork = ANT_NETWORK_DEFAULT;
-  sAntSetupDataSlave.AntNetwork = ANT_NETWORK_DEFAULT;
+  //sAntSetupDataSlave.AntNetwork = ANT_NETWORK_DEFAULT;
   for(u8 i = 0; i < ANT_NETWORK_NUMBER_BYTES; i++)
   {
     sAntSetupDataMaster.AntNetworkKey[i] = ANT_DEFAULT_NETWORK_KEY;
-    sAntSetupDataSlave.AntNetworkKey[i] = ANT_DEFAULT_NETWORK_KEY;
+    //sAntSetupDataSlave.AntNetworkKey[i] = ANT_DEFAULT_NETWORK_KEY;
   }
     
   /* If good initialization, set state to Idle */
-  if( AntAssignChannel(&sAntSetupDataMaster)&&AntAssignChannel(&sAntSetupDataSlave) )
+  if( AntAssignChannel(&sAntSetupDataMaster))
   {
     /* Channel is configured, so change LED to yellow */
     UserApp1_StateMachine = UserApp1SM_WaitChannelAssign;
@@ -313,7 +301,7 @@ static void UserAppSM_ChannelOpen(void)
   static u8 au8LcdSeekerShow[20]="Seeker      9      ";
   static u8 *pau8LcdSeekerShow=(&au8LcdSeekerShow[0])+12;
   static u8 au8LcdSlaveShow[20]= "SLAVE    -XX       ";
-   u8 *pau8LcdSlaveShow=(&au8LcdSlaveShow[0])+11;
+  u8 *pau8LcdSlaveShow=(&au8LcdSlaveShow[0])+11;
   static u8 au8LcdTipShow[20]="Ready? Yes.press B2";
   static s8 as8Levels[LED_NUMBER] = {-99,-84,-76,-69,-63,-58,-54,-51};
   static u8 u8TenCounter;
@@ -321,16 +309,16 @@ static void UserAppSM_ChannelOpen(void)
   
   if(AntRadioStatusChannel(ANT_CHANNEL_USERAPP) != ANT_OPEN)
   {
-     u8LastState = 0xff;
+    u8LastState = 0xff;
     UserApp_u32Timeout = G_u32SystemTime1ms;
     UserApp1_StateMachine = UserAppSM_WaitChannelClose;
   } /* if(AntRadioStatusChannel(ANT_CHANNEL_USERAPP) != ANT_OPEN) */
    
-  /* Always check for ANT messages */
+  /* Always check for ANT messages */   /*master*/
   if( AntReadAppMessageBuffer() )
   {
 
-     /* New data message: check what it is */
+     /* New data message: check what it is */   
     if(G_eAntApiCurrentMessageClass == ANT_DATA)
     {
       s8RssiValue=G_sAntApiCurrentMessageExtData.s8RSSI;
@@ -359,12 +347,14 @@ static void UserAppSM_ChannelOpen(void)
         pau8LcdMasterShow++;
         *pau8LcdMasterShow = (s8AbsRssiValue % 10) + NUMBER_ASCII_TO_DEC;
        }
+#if 0
        else
        { 
         *pau8LcdSlaveShow = (s8AbsRssiValue / 10) + NUMBER_ASCII_TO_DEC;
         pau8LcdSlaveShow++;
         *pau8LcdSlaveShow = (s8AbsRssiValue % 10) + NUMBER_ASCII_TO_DEC;
        }
+#endif
        if(bLedShow)
        {
            /*led show*/
@@ -383,14 +373,14 @@ static void UserAppSM_ChannelOpen(void)
      
       if(s8AbsRssiValue<46)
       {
-        if(bStateflag)
-        {
          LCDMessage(LINE1_START_ADDR, "Hide  you found me > - <"); 
-        }
+
+#if 0
         else
         {
          LCDMessage(LINE1_START_ADDR, "Seeker    found you *0*"); 
         }
+#endif
       }
       else
       {
